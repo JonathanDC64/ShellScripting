@@ -412,3 +412,93 @@ shift
 shift 1 # same as just shift
 shift 2
 ```
+
+## Redirect output to a file
+
+```bash
+FILE="/tmp/data"
+head -n1 /etc/passwd > ${FILE}
+
+id -un > id
+
+# To append to a file, use >>
+head -n1 /etc/passwd >> ${FILE}
+```
+
+## Redirect Input to a command
+
+```bash
+# Read from the file rather than the keyboard
+read LINE < ${FILE}
+echo "LINE contains: ${LINE}"
+# LINE contains: root:x:0:0:root:/root:/bin/bash
+
+# same as (0 refers to standard input, it is file descriptor)
+read LINE 0< ${FILE}
+echo "LINE contains: ${LINE}"
+```
+
+## File descriptors
+
+0 : Standard input = STDIN_FILENO = stdin
+
+1 : Standard output = STDOUT_FILENO = stdout
+
+2 : Standard error = STDERR_FILENO = stderr
+
+Note that pipes only receive the standard output of the piped command,
+not the standard error.
+
+```bash
+read X 0< /etc/centos-release
+echo ${X}
+# CentOS Linux release 7.4.1708 (Core)
+
+echo ${UID} 1> uid
+cat uid
+# 1000
+
+head -n1 /etc/passwd /etc/hosts /fakefile
+# ==> /etc/passwd <==
+# root:x:0:0:root:/root:/bin/bash
+#
+# ==> /etc/hosts <==
+# 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+# head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+head -n1 /etc/passwd /etc/hosts /fakefile 2> error.log
+# ==> /etc/passwd <==
+# root:x:0:0:root:/root:/bin/bash
+#
+# ==> /etc/hosts <==
+# 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+cat error.log
+# head: cannot open ‘/fakefile’ for reading: No such file or directory
+
+# You can also do multiple redirections at once
+head -n1 /etc/passwd /etc/hosts /fakefile 1> head_output.log 2> error.log
+
+# Redirect both statndard output and error to the same file
+# (2>&1 means to redirect standard error to standard output and since we use > previously, it gets stored in the file)
+head -n1 /etc/passwd /etc/hosts /fakefile > head.both 2>&1
+
+# Same way of doing previous command
+head -n1 /etc/passwd /etc/hosts /fakefile &> head.both
+
+# Pipe standard output and standard error
+head -n1 /etc/passwd /etc/hosts /fakefile 2>&1 | cat -n
+
+# Same as previous command
+head -n1 /etc/passwd /etc/hosts /fakefile |& cat -n
+
+# Sending output to standard error
+echo "This is STDERR" 1>&2
+```
+
+## Discarding output using /dev/null
+
+```bash
+# Discards the standard output
+head -n1 /etc/passwd /etc/hosts /fakefile > /dev/null
+# head: cannot open ‘/fakefile’ for reading: No such file or directory
+```
