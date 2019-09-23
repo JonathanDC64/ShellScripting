@@ -171,6 +171,21 @@ then
     echo "Your username matches ${USER_NAME_TO_TEST_FOR}"
 fi
 
+# Elif
+# if [[ "${1}" = 'start' ]]
+# then
+#     echo 'tarting'
+# elif [[ "${1}" = 'stop' ]]
+# then
+#     echo 'Stoping'
+# elif [[ "${1}" = 'status' ]]
+# then
+#     echo 'Status:'
+# else
+#     echo 'Supply a valid option.'
+#     exit 1
+# fi
+
 #arg1 OP arg2   Arithmetic tests.  OP is one of -eq, -ne, -lt, -le, -gt, or -ge.
 ```
 
@@ -501,4 +516,26 @@ echo "This is STDERR" 1>&2
 # Discards the standard output
 head -n1 /etc/passwd /etc/hosts /fakefile > /dev/null
 # head: cannot open ‘/fakefile’ for reading: No such file or directory
+```
+
+## Case Statements
+
+Check bash manpage for pattern matching for more info.
+
+```bash
+case "${1}" in
+    start)
+        echo 'Starting.'
+        ;;
+    stop)
+        echo 'Stoping.'
+        ;;
+    status|state|--status|--state) # or
+        echo 'Status:'
+        ;;
+    *) # default
+        echo 'Supply a valid option'
+        exit 1
+        ;;
+esac
 ```
