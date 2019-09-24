@@ -674,3 +674,178 @@ awk 'BEGIN {print 6/4}'
 # 1.5
 
 ```
+
+## locate - Find files
+
+```bash
+locate userdel
+# /usr/sbin/luserdel
+# /usr/sbin/userdel
+# /usr/share/bash-completion/completions/userdel
+# /usr/share/man/de/man8/userdel.8.gz
+# /usr/share/man/fr/man8/userdel.8.gz
+# /usr/share/man/it/man8/userdel.8.gz
+# /usr/share/man/ja/man8/userdel.8.gz
+# /usr/share/man/man1/luserdel.1.gz
+# /usr/share/man/man8/userdel.8.gz
+# /usr/share/man/pl/man8/userdel.8.gz
+# /usr/share/man/ru/man8/userdel.8.gz
+# /usr/share/man/sv/man8/userdel.8.gz
+# /usr/share/man/tr/man8/userdel.8.gz
+# /usr/share/man/zh_CN/man8/userdel.8.gz
+# /usr/share/man/zh_TW/man8/userdel.8.gz
+
+# locate without root privilege
+locate .bashrc
+# /etc/skel/.bashrc
+# /home/vagrant/.bashrc
+
+# locate with root privilege
+sudo locate .bashrc
+# /etc/skel/.bashrc
+# /home/Jon1/.bashrc
+# /home/brussell/.bashrc
+# /home/jlocke/.bashrc
+# /home/jsmith/.bashrc
+# /home/moor/.bashrc
+# /home/philapp/.bashrc
+# /home/turing/.bashrc
+# /home/vagrant/.bashrc
+# /home/woz/.bashrc
+# /root/.bashrc
+
+# to update locate database use updatedb
+touch userdel
+sudo updatedb
+locate userdel
+# /usr/sbin/luserdel
+# /usr/sbin/userdel
+# ...
+# /usr/share/man/zh_TW/man8/userdel.8.gz
+# /vagrant/userdel  <====== Newly create file found by locate b/c of updatedb
+```
+
+## find - Search entire directory for file
+
+```bash
+find /usr/sbin/ -name userdel
+# /usr/sbin/userdel
+
+# to search entire drive use / as path, usually have to use sudo to prevent permission error
+# or redirect standard error to /dev/null
+sudo find / -name userdel
+## ......
+
+find / -name userdel 2> /dev/null
+# /vagrant/userdel
+# /usr/sbin/userdel
+# /usr/share/bash-completion/completions/userdel
+```
+
+## userdel - Delete an existing user
+
+```bash
+# May not be available on your system
+# Use locate userdel to see possible locations
+# Or perhaps you have to switch to the root user using su - or sudo
+
+# This will delete the user, but keep its files
+sudo userdel username
+
+# Remove user and its home directory
+sudo userdel -r isaac
+
+# Check /etc/passwd or `id username` to see if user was deleted
+
+```
+
+## grep - Finds lines that match a pattern and discards everything else
+
+```bash
+locate userdel | grep bin
+/usr/sbin/luserdel
+/usr/sbin/userdel
+```
+
+## tar - Create an archive containing several files and directories
+
+`-c` create an archive
+
+`-f FILENAME` specify the filename of the archive file (ex: archive.tar)
+
+`-t` list contents of an archive
+
+`-v` verbose
+
+`-x` extract archive
+
+`-z` to compress archive as .gz (using gzip)
+
+```bash
+# Create archive.tar from files foo and bar.
+tar -cf archive.tar foo bar
+
+# List all files in archive.tar verbosely.
+tar -tvf archive.tar
+
+# Extract all files from archive.tar
+tar -xf archive.tar
+
+# Create and compress archive
+tar -zcvf archive.tar.gz file1 file2
+
+```
+
+## gzip - Compress a file
+
+Usually used to compress tar files as tar.gz
+
+```bash
+# Create archive.tar.gz compressed archive
+gzip archive.tar
+
+```
+
+## gunzip - Unzip a file
+
+```bash
+gunzip archive.tar.gz
+```
+
+## chage - Expire/Lock account
+
+Note: You should not use the commands:
+
+`passwd -l username` to lock account
+
+or
+
+`passwd -u username` to unlock account
+
+Since these do not prevent users from accessing the acount
+using an ssh key.
+
+```bash
+# Expires instantly
+sudo chage -E 0 username
+su - username
+# Password:
+# Your account has expired; please contact your system administrator
+# su: User account has expired
+
+# Remove account expiration / Unlock account : Use -1 for -E
+sudo chage -E -1 username
+```
+
+## usermod - modify a user account
+
+Can be used to lock account by setting shell to /sbin/nologin
+
+`-s SHELL_PATH` option lets you change the users default shell
+
+Note: again, this will not prevent all actions from using ssh.
+chage is still recommended to lock accounts.
+
+```bash
+sudo usermod -s /sbin/nologin jlocke
+```

@@ -6,10 +6,10 @@
 
 function usage() {
     echo "Usage: ${0} [-vs] [-l LENGTH]" 1>&2
-    echo 'Generate a random password.'
-    echo '  -l LENGTH   Specify the password length.'
-    echo '  -s          Append a special character to the password'
-    echo '  -v          Increase verbosity.'
+    echo 'Generate a random password.' 1>&2
+    echo '  -l LENGTH   Specify the password length.' 1>&2
+    echo '  -s          Append a special character to the password' 1>&2
+    echo '  -v          Increase verbosity.' 1>&2
 
     exit 1
 }
