@@ -84,6 +84,7 @@ Cannot start with digits [0-9]
 
 ```bash
 WORD='script'
+readonly VERBOSE='true' # Cannot be modified after value is assigned
 ```
 
 ## Output value of variable
@@ -538,4 +539,138 @@ case "${1}" in
         exit 1
         ;;
 esac
+```
+
+## Functions
+
+```bash
+
+function log() {
+    local MESSAGE="${@}" # local means it only exists within the scope of the function
+    echo "${MESSAGE}"
+}
+
+log 'Hello'
+log 'This is fun!'
+# Hello
+# This is fun!
+
+```
+
+## logger - Record messages to the systems logs
+
+```bash
+logger 'Hello from the command line'
+sudo tail /var/log/messages
+# Sep 23 14:01:01 localhost systemd: Starting Session 23 of user root.
+# Sep 23 14:01:01 localhost systemd: Removed slice User Slice of root.
+# Sep 23 14:01:01 localhost systemd: Stopping User Slice of root.
+# Sep 23 15:01:01 localhost systemd: Created slice User Slice of root.
+# Sep 23 15:01:01 localhost systemd: Starting User Slice of root.
+# Sep 23 15:01:01 localhost systemd: Started Session 24 of user root.
+# Sep 23 15:01:01 localhost systemd: Starting Session 24 of user root.
+# Sep 23 15:01:01 localhost systemd: Removed slice User Slice of root.
+# Sep 23 15:01:01 localhost systemd: Stopping User Slice of root.
+# Sep 23 15:03:59 localhost vagrant: Hello from the command line
+
+logger -t my-script 'Tagging on.'
+sudo tail -n1 /var/log/message
+# Sep 23 15:05:36 localhost my-script: Tagging on.
+```
+
+## getopts - Parse command line arguments
+
+```bash
+
+# If a letter is followed by a :, it is expected to have an argument
+while getopts vl:s OPTION
+do
+    echo "${OPTION}: ${OPTARG}"
+done
+
+# Suppose the above script is contained in ./luser-demo11.sh
+./luser-demo11.sh -v -l 6 -s
+# v:
+# l: 6
+# s:
+
+# OPTIND gives the position of the next command line argument.
+# Useful for after parameters are process
+shift $((OPTIND-1))
+```
+
+## Arithmetic
+
+Bash does not support floating point arithmetic, you need to use
+something like `bc` or `awk` to calculate floating point values.
+
+```bash
+# Arithmetic expansion
+NUM=$(( 1 + 2 ))
+echo ${NUM}
+# 3
+
+DICEA='3'
+DICEB='6'
+TOTAL=$(( DICEA + DICEB ))
+echo ${TOTAL}
+# 9
+
+NUM='1'
+(( NUM++  ))
+echo ${NUM}
+# 2
+
+NUM='2'(( NUM--  ))
+echo ${NUM}
+# 1
+
+NUM='1'
+(( NUM += 5 ))
+echo ${NUM}
+# 6
+
+# let operations
+# id++, id--      variable post-increment, post-decrement
+# ++id, --id      variable pre-increment, pre-decrement
+# -, +            unary minus, plus
+# !, ~            logical and bitwise negation
+# **              exponentiation
+# *, /, %         multiplication, division, remainder
+# +, -            addition, subtraction
+# <<, >>          left and right bitwise shifts
+# <=, >=, <, >    comparison
+# ==, !=          equality, inequality
+# &               bitwise AND
+# ^               bitwise XOR
+# |               bitwise OR
+# &&              logical AND
+# ||              logical OR
+# expr ? expr : expr
+#                 conditional operator
+# =, *=, /=, %=,
+# +=, -=, <<=, >>=,
+# &=, ^=, |=      assignment
+
+let NUM='2 + 3'
+echo ${NUM}
+# 5
+
+let NUM++
+echo ${NUM}
+# 6
+
+expr 1 + 1
+# 2
+
+NUM=$(expr 2 + 3)
+echo ${NUM}
+# 5
+
+echo '6 / 4' | bc -l
+# 1.50000000000000000000
+
+awk 'BEGIN {print 6/4}'
+# 1.5
+
 ```
