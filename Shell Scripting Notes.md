@@ -849,3 +849,118 @@ chage is still recommended to lock accounts.
 ```bash
 sudo usermod -s /sbin/nologin jlocke
 ```
+
+## cut - Gets specific part of an input
+
+`-c RANGE` Cut lines by character
+
+`-b RANGE` Cut lines by bytes (Ex: ASCII vs UTF8)
+
+`-f RANGE` Cut lines by field (columns) (tab by default)
+
+`-d DELIMITER` Specify the delimeter used for `-f`. Always quote DELIMITER.
+
+`cut` cannot handle multi-character delimiters, use `awk`.
+
+```bash
+echo -e "Helllo\nWorld\nHow\nAre\nYou" | cut -c 1
+# H
+# W
+# H
+# A
+# Y
+
+echo -e "Helllo\nWorld\nHow\nAre\nYou" | cut -c 1-3
+# Hel
+# Wor
+# How
+# Are
+# You
+
+echo -e "Helllo\nWorld\nHow\nAre\nYou" | cut -c 2-
+# elllo
+# orld
+# ow
+# re
+# ou
+
+echo -e "Helllo\nWorld\nHow\nAre\nYou" | cut -c -3
+# Hel
+# Wor
+# How
+# Are
+# You
+
+echo -e "Helllo\nWorld\nHow Are\nAre\nYou Doing" | cut -c 1,3,5
+# Hll
+# Wrd
+# HwA
+# Ae
+# YuD
+
+echo -e "Column1\tColumn2\tColumn3" | cut -f 1
+# Column1
+echo -e "Column1\tColumn2\tColumn3" | cut -f 2
+# Column2
+echo -e "Column1\tColumn2\tColumn3" | cut -f 3
+# Column3
+
+echo -e "Column1,Column2,Column3" | cut -d ',' -f 1
+# Column1
+
+echo -e "Column1,Column2,Column3" | cut -d ',' -f 1,2 --output-delimiter=':'
+# Column1:Column2
+```
+
+## awk - Pattern scanning and processing language
+
+Advantages of using awk:
+
+* Allows delimiters of more than 1 character.
+* Handles fields seperated by whitespace well.
+
+
+`-F SEPERATOR` Specify field seperator
+
+`-v OFS='SEPERATOR'` Change output field seperator
+
+`$NF` Special awk variable that gives number of fields.
+Can be used to display last field.
+
+```bash
+echo -e "Column1DATA:Column2DATA:Column3" | awk -F 'DATA:' '{print $2}'
+# Column2
+
+echo -e 'Column1:Column2:Column3' | awk -F ':' '{print $1, $3}'
+# Column1 Column3
+
+echo -e 'Column1:Column2:Column3' | awk -F ':' -v OFS=',' '{print $1, $3}'
+# Column1,Column3
+
+echo -e 'Column1:Column2:Column3' | awk -F ':' -v OFS='=' '{print $1, $3}'
+# Column1=Column3
+
+echo -e 'Column1:Column2:Column3' | awk -F ':'  '{print $1 "," $3}'
+# Column1,Column3
+
+echo -e 'Column1:Column2:Column3' | awk -F ':'  '{print $1 ", " $3}'
+# Column1, Column3
+
+echo -e 'Value1:Value2:Value3' | awk -F ':'  '{print "COL1: " $1 " COL3:  " $3}'
+# COL1: Value1 COL3:  Value3
+
+echo -e 'Value1:Value2:Value3' | awk -F ':'  '{print $NF}'
+# Value3
+
+echo -e 'Value1:Value2:Value3' | awk -F ':'  '{print $(NF - 1)}'
+# Value2
+
+echo -e 'Value1:Value2:Value3' | awk -F ':'  '{print $(2 + 1)}'
+# Value3
+
+echo -e "L1C1         L2C2\n   L2C1 L2C2    \n L3C1      L3C2\nL4C1\tL4C2" | awk '{print $1, $2}'
+# L1C1 L2C2
+# L2C1 L2C2
+# L3C1 L3C2
+# L4C1 L4C2
+```
