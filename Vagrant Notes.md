@@ -1,5 +1,16 @@
-
 # Vagrant
+
+- [Vagrant](#vagrant)
+  - [To download and store a box (OS) to your system](#to-download-and-store-a-box-os-to-your-system)
+  - [To initialize Vagrant projects (jasonc/centos is repo name on vagrant)](#to-initialize-vagrant-projects-jasonccentos-is-repo-name-on-vagrant)
+  - [To import the box into VirtualBox and start it](#to-import-the-box-into-virtualbox-and-start-it)
+  - [To connect to vagrant vm via ssh](#to-connect-to-vagrant-vm-via-ssh)
+  - [To stop vm](#to-stop-vm)
+  - [to suspend vagrant vm](#to-suspend-vagrant-vm)
+  - [To resume Vagrant vm](#to-resume-vagrant-vm)
+  - [Check status of vm](#check-status-of-vm)
+  - [To delete a VM](#to-delete-a-vm)
+  - [Vagrant file example](#vagrant-file-example)
 
 ## To download and store a box (OS) to your system
 
@@ -13,7 +24,7 @@ vagrant box add jasonc/centos7
 vagrant init jasonc/centos7
 ```
 
-# To import the box into VirtualBox and start it
+## To import the box into VirtualBox and start it
 
 ```bash
 vagrant up # Will start all vagrant vms
