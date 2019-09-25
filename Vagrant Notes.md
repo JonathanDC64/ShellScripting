@@ -20,12 +20,13 @@ vagrant up # Will start all vagrant vms
 
 vagrant up --provider virtualbox
 
-vagrant up [VM_NAME]
+vagrant up [VM_NAME] # VM_NAME is the one defined in the Vagrantfile
 ```
 
 ## To connect to vagrant vm via ssh
 
 ```bash
+vagrant ssh # Works if there is a single vm
 vagrant ssh [VM_NAME] # Default user: vagrant  password: vagrant (same for root account)
 
 exit # To exit ssh

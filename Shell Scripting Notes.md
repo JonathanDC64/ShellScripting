@@ -74,6 +74,15 @@ man uptime
 cat filename
 ```
 
+## chmod - Alter file or Directory permissions
+
+```bash
+# Give execute permission to owner
+chmod 755 script
+
+chmod +x script
+```
+
 ## Define variable
 
 There must not be any spaces next to the =
@@ -81,6 +90,12 @@ There must not be any spaces next to the =
 Variable names can contain [a-z], [A-Z], [0-9] and _
 
 Cannot start with digits [0-9]
+
+Use `" "` so that variables inside expand.
+
+Will not expand with `' '`.
+
+Ex: `"${VAR}"` vs. `'${VAR}'`
 
 ```bash
 WORD='script'
@@ -108,14 +123,17 @@ echo "${WORD}ing is fun!"
 # scripting is fun!
 ```
 
-## Store output of command in variable
+## Store output of command in variable (Command substitution)
 
 ```bash
 USER_NAME=$(id -un)
+echo "Username: $(id -un)"
+
+# This is the old style
 USER_NAME=`id -un`
 ```
 
-## Builting variables
+## Builtin variables
 
 ```bash
 # The current users UID
@@ -123,6 +141,10 @@ echo "${UID}"
 # 1000
 echo "${EUID}"
 # 1000
+
+echo "${HOSTNAME}"
+echo "${RANDOM}"
+# ...
 
 # Under 'shell variables' for more builtin variables
 man bash
@@ -150,7 +172,21 @@ whoami
 
 ## If statements
 
+Look at `help test | less` for conditions help.
+
 ```bash
+# Syntax
+if [[ COMANDS ]]
+then
+    COMMANDS
+elif [[ COMMANDS ]]
+then
+    COMMANDS
+else
+    COMMANDS
+fi
+
+
 if [[ "${UID}" -eq 0 ]]
 then
     echo "You are root."
@@ -172,7 +208,7 @@ then
     echo "Your username matches ${USER_NAME_TO_TEST_FOR}"
 fi
 
-# Elif
+# Else if
 # if [[ "${1}" = 'start' ]]
 # then
 #     echo 'tarting'
@@ -190,9 +226,15 @@ fi
 #arg1 OP arg2   Arithmetic tests.  OP is one of -eq, -ne, -lt, -le, -gt, or -ge.
 ```
 
-## Get exit status of last command
+## Exit status of last command
 
-Use `${?}` builtin.
+0 = true / successful
+
+1 = false / unsuccessful
+
+Any non-zero exit status represents a failure.
+
+Use `${?}` builtin to get exit status of last command.
 
 Note if an `exit n` command is not explicitly defined,
 the exit status of a script will be that of the last command.
@@ -323,6 +365,20 @@ echo "123" | fold -w1
 
 ## Positional paramaters and Special Parameters
 
+`$0` Stores the script name.
+
+`$1` Stores the first argument.
+
+`$2` Stores the second argument.
+
+`$n` Stores the n'th argument.
+
+`$*` When used in quotes: `"$1 $2 $3 ..."`
+
+`$@` When used in quotes: `"$1" "$2" "$3" ...`
+
+`$#` The number of positional parameters
+
 ```bash
 # First parameter is the path used for the script
 echo "You executed this command ${0}"
@@ -380,6 +436,13 @@ dirname /some/path/to/a/file.ext
 ## For loops
 
 ```bash
+# Syntax
+for VARIABLE in LIST
+do
+    COMMANDS
+done
+
+
 for X in Frank Claire Doug
 do
   echo "Hi ${X}."
@@ -392,6 +455,13 @@ done
 ## While loops
 
 ```bash
+# Syntax
+while [[ COMMANDS ]]
+do
+    COMMANDS
+done
+
+
 X=1
 while [[ "$X" -eq 1 ]]
 do
@@ -1144,4 +1214,88 @@ wc -c /etc/passwd
 
 wc -l /etc/passwd
 #   27 /etc/passwd
+```
+
+## /etc/hosts files is used to resolve hostnames into IP's
+
+You can add entries to this file as if it is a local DNS.
+
+```bash
+cat /etc/hosts
+# 127.0.0.1       admin01 admin01
+# 127.0.0.1   localhost localhost.localdomain localhost4 # localhost4.localdomain4
+# ::1         localhost localhost.localdomain localhost6 # localhost6.localdomain6
+```
+
+## tee - Read from STDIN and write to STDOUT and files
+
+`-a` Append to a file
+
+As compared to redirection `>>`, this allows you to append to files
+that require elevated permissions.
+
+```bash
+echo "10.9.8.11 server01" | sudo tee -a /etc/hosts
+10.9.8.11 server01
+cat /etc/hosts
+# 127.0.0.1       admin01 admin01
+# 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+# ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+# 10.9.8.11 server01
+```
+
+## ssh-keygen - Generate SSH key
+
+```bash
+ssh-keygen
+# Generating public/private rsa key pair.
+# Enter file in which to save the key (/home/vagrant/.ssh/id_rsa): 
+# Enter passphrase (empty for no passphrase): 
+# Enter same passphrase again: 
+# Your identification has been saved in /home/vagrant/.ssh/id_rsa.
+# Your public key has been saved in /home/vagrant/.ssh/id_rsa.pub.
+# The key fingerprint is:
+# SHA256:f+mI1nLtP0y3kEpxRfO2EFL1N1LISk1OZU2rqtq7yjs vagrant@admin01
+# The key's randomart image is:
+# +---[RSA 2048]----+
+# |           .===Oo|
+# |           .+++.*|
+# |          . .+.o=|
+# |           o .+.+|
+# |        S   o... |
+# |         . ..+. .|
+# |         .oo+o...|
+# |      .E+.+=. o. |
+# |       **B+.o... |
+# +----[SHA256]-----+
+```
+
+## ssh-copy-id - Use local SSH key to login to remote machine
+
+```bash
+ssh-copy-id server01
+# /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/vagrant/.ssh/id_rsa.pub"
+# The authenticity of host 'server01 (10.9.8.11)' can't be established.
+# ECDSA key fingerprint is SHA256:Fi4FisVgFyEkos9NgKz0q+zzZwe3+xhCHWGrXL+jZck.
+# ECDSA key fingerprint is MD5:b6:04:55:d7:db:3c:a8:a1:b6:f6:15:1f:be:7e:48:41.
+# Are you sure you want to continue connecting (yes/no)? yes
+# /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+# /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+# vagrant@server01's password: 
+# 
+# Number of key(s) added: 1
+# 
+# Now try logging into the machine, with:   "ssh 'server01'"
+# and check to make sure that only the key(s) you wanted were added.
+
+
+[vagrant@admin01 ~]$ ssh server01
+[vagrant@server01 ~]$ # <=== Notice the change in hostname
+```
+
+## Remotely execute commands on other machine using SSH
+
+```bash
+[vagrant@admin01 ~]$ ssh server01 hostname
+server01
 ```

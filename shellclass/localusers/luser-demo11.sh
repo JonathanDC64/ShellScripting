@@ -48,11 +48,11 @@ do
     esac
 done
 
-# Remove the options while leaving the remianing arguments.
+# Remove the options while leaving the remaining arguments.
 shift "$(( OPTIND - 1 ))"
 
 # Check if there are any remaining parameters after shift
-if [[ "${#}" -gt 0 ]]
+if [[ "$#" -gt 0 ]]
 then
     usage
 fi
