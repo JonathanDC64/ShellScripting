@@ -964,3 +964,184 @@ echo -e "L1C1         L2C2\n   L2C1 L2C2    \n L3C1      L3C2\nL4C1\tL4C2" | awk
 # L3C1 L3C2
 # L4C1 L4C2
 ```
+
+## netstat - View open ports
+
+`-n` Show numerical value of protocol port.
+
+`-u` Get information on UDP.
+
+`-t` Get information on TCP.
+
+`-l` Get listening port.
+
+`-4` Get only tcp v.4 lines. (Not v.6)
+
+```bash
+netstat -nutl
+# Active Internet connections (only servers)
+# Proto Recv-Q Send-Q Local Address           Foreign Address         State  
+# tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN 
+# tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN
+# tcp6       0      0 :::22                   :::*                    LISTEN
+# tcp6       0      0 ::1:25                  :::*                    LISTEN
+# udp        0      0 0.0.0.0:55236           0.0.0.0:*
+# udp        0      0 127.0.0.1:323           0.0.0.0:*
+# udp        0      0 0.0.0.0:68              0.0.0.0:*
+# udp6       0      0 :::48938                :::*
+# udp6       0      0 ::1:323                 :::*
+
+# Get just port numbers
+netstat -nutl | grep -Ev "^Active|^Proto" | awk '{print $4}' | awk -F ':' '{print $NF}'
+# 22
+# 25
+# 22
+# 25
+# 55236
+# 323
+# 68
+# 48938
+# 323
+```
+
+## sort - Sort content of a file alphabetically
+
+Only sorts in output, sort is not stored in provided file.
+
+`-r` To reverse order of output.
+
+`-n` Numeric sort.
+
+`-h` Human numeric sort (Understands K=kilobyte, M=megabyte,...)
+
+`-u` Only keep unique values.
+
+`-t` Specify field seperator.
+
+`-k` Specify a sort key.
+
+```bash
+echo -e "C\nB\nA" | sort
+# A
+# B
+# C
+
+echo -e "1\n2\n3" | sort -r
+# 3
+# 2
+# 1
+
+cut -d ':' -f 3 /etc/passwd | sort -n
+# 0
+# 1
+# 2
+# 3
+# 4
+# 5
+# 6
+# 7
+# 8
+# 11
+# 12
+# 14
+# 29
+# 32
+# 74
+# 81
+# 89
+# 99
+# 192
+# 997
+# 998
+# 999
+# 1000
+# 1001
+# 1002
+# 1005
+# 65534
+
+netstat -nutl | grep ':' | awk '{print $4}' | awk -F ':' '{print $NF}' | sort -nu
+# 22
+# 25
+# 68
+# 323
+# 48938
+# 55236
+
+echo -e "7:8:9\n4:5:6\n1:2:3" | sort -t ':' -k 3
+# 1:2:3
+# 4:5:6
+# 7:8:9
+```
+
+## du - Disk usage info
+
+```bash
+du
+# 8       ./.vagrant/rgloader
+# 40      ./.vagrant/machines/default/virtualbox
+# 44      ./.vagrant/machines/default
+# 48      ./.vagrant/machines
+# 60      ./.vagrant
+# 8       ./Exercises/Exercise1
+# 8       ./Exercises/Exercise5
+# 8       ./Exercises/Exercise2
+# 8       ./Exercises/Exercise4
+# 8       ./Exercises/Exercise3
+# 44      ./Exercises
+# 164     .
+```
+
+## uniq - Removes duplicate lines
+
+Note: Only works if the input to `uniq` is already sorted
+
+`-c` Gives you the number of duplicate occurences.
+
+```bash
+# Doesnt work on unsorted input
+netstat -nutl | grep ':' | awk '{print $4}' | awk -F ':' '{print $NF}' | uniq
+# 22
+# 25
+# 22
+# 25
+# 55236
+# 323
+# 68
+# 48938
+# 323
+
+netstat -nutl | grep ':' | awk '{print $4}' | awk -F ':' '{print $NF}' | sort -n | uniq
+# 22
+# 25
+# 68
+# 323
+# 48938
+# 55236
+
+netstat -nutl | grep ':' | awk '{print $4}' | awk -F ':' '{print $NF}' | sort -n | uniq -c
+#      2 22
+#      2 25
+#      1 68
+#      2 323
+#      1 48938
+#      1 55236
+```
+
+## wc - Word count
+
+Prints newline, word and byte counts for each file.
+
+```bash
+wc /etc/passwd
+#   27   44 1307 /etc/passwd
+
+wc -w /etc/passwd
+#   44 /etc/passwd
+
+wc -c /etc/passwd
+#   1307 /etc/passwd
+
+wc -l /etc/passwd
+#   27 /etc/passwd
+```
