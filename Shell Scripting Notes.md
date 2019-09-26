@@ -26,9 +26,9 @@
   - [ps - View running processes](#ps---view-running-processes)
   - [date - Get the current time](#date---get-the-current-time)
   - [Checksum hash](#checksum-hash)
-  - [shuf - Generate random permuattions](#shuf---generate-random-permuattions)
+  - [shuf - Generate random permutations](#shuf---generate-random-permutations)
   - [fold - Wraps text to desired width](#fold---wraps-text-to-desired-width)
-  - [Positional paramaters and Special Parameters](#positional-paramaters-and-special-parameters)
+  - [Positional parameters and Special Parameters](#positional-parameters-and-special-parameters)
   - [which - Displays the path of the commands program](#which---displays-the-path-of-the-commands-program)
   - [hash - Reset PATH program associations](#hash---reset-path-program-associations)
   - [basename - Strip Directory and suffix from filenames](#basename---strip-directory-and-suffix-from-filenames)
@@ -67,7 +67,6 @@
   - [ssh-keygen - Generate SSH key](#ssh-keygen---generate-ssh-key)
   - [ssh-copy-id - Use local SSH key to login to remote machine](#ssh-copy-id---use-local-ssh-key-to-login-to-remote-machine)
   - [Remotely execute commands on other machine using SSH](#remotely-execute-commands-on-other-machine-using-ssh)
-
 
 ## \# (Sharp) + ! (Bang) = #! (Shebang)
 
@@ -177,7 +176,7 @@ Conventionally, variables are upper case.
 
 In general, single quotes ' ' prevent the expansion of variables.
 
-Use double quots " " to expand variables.
+Use double quotes " " to expand variables.
 
 Use the `"${WORD}"`to append text to a variable
 
@@ -283,7 +282,7 @@ fi
 #     echo 'tarting'
 # elif [[ "${1}" = 'stop' ]]
 # then
-#     echo 'Stoping'
+#     echo 'Stopping'
 # elif [[ "${1}" = 'status' ]]
 # then
 #     echo 'Status:'
@@ -338,7 +337,7 @@ echo ${PASSWORD} | passwd --stdin ${USER_NAME}
 
 ## useradd - Add a new user to the system
 
-Convetionally, usernames are limitted to 8 characters
+Conventionally, usernames are limited to 8 characters
 and all lowercase.
 
 Having more than 8 characters does not create
@@ -349,7 +348,7 @@ The `-m` flag creates a home directory for the user.
 The `-c` flag attaches a comment to the user.
 
 ```bash
-usseradd -c "${COMMENT}" -m "${USER_NAME}"
+useradd -c "${COMMENT}" -m "${USER_NAME}"
 ```
 
 ## passwd - Change or add password to account
@@ -404,7 +403,7 @@ echo $(date +%s%N) | sha256sum | head -c 10
 # b03ae8b0ca
 ```
 
-## shuf - Generate random permuattions
+## shuf - Generate random permutations
 
 shuf randomizes the order of the lines from standard input / file
 
@@ -432,7 +431,7 @@ echo "123" | fold -w1
 # 3
 ```
 
-## Positional paramaters and Special Parameters
+## Positional parameters and Special Parameters
 
 `$0` Stores the script name.
 
@@ -440,7 +439,7 @@ echo "123" | fold -w1
 
 `$2` Stores the second argument.
 
-`$n` Stores the n'th argument.
+`$n` Stores the nth argument.
 
 `$*` When used in quotes: `"$1 $2 $3 ..."`
 
@@ -453,7 +452,7 @@ echo "123" | fold -w1
 echo "You executed this command ${0}"
 # You executed this command ./luser-demo06.sh
 
-# if you use the fullpath it changes
+# if you use the full path it changes
 echo "You executed this command ${0}"
 # You executed this command /vagrant/luser-demo06.sh
 
@@ -630,10 +629,10 @@ head -n1 /etc/passwd /etc/hosts /fakefile 2> error.log
 cat error.log
 # head: cannot open ‘/fakefile’ for reading: No such file or directory
 
-# You can also do multiple redirections at once
+# You can also do multiple redirection at once
 head -n1 /etc/passwd /etc/hosts /fakefile 1> head_output.log 2> error.log
 
-# Redirect both statndard output and error to the same file
+# Redirect both standard output and error to the same file
 # (2>&1 means to redirect standard error to standard output and since we use > previously, it gets stored in the file)
 head -n1 /etc/passwd /etc/hosts /fakefile > head.both 2>&1
 
@@ -668,7 +667,7 @@ case "${1}" in
         echo 'Starting.'
         ;;
     stop)
-        echo 'Stoping.'
+        echo 'Stopping.'
         ;;
     status|state|--status|--state) # or
         echo 'Status:'
@@ -961,7 +960,7 @@ or
 
 `passwd -u username` to unlock account
 
-Since these do not prevent users from accessing the acount
+Since these do not prevent users from accessing the account
 using an ssh key.
 
 ```bash
@@ -1002,36 +1001,36 @@ sudo usermod -s /sbin/nologin jlocke
 `cut` cannot handle multi-character delimiters, use `awk`.
 
 ```bash
-echo -e "Helllo\nWorld\nHow\nAre\nYou" | cut -c 1
+echo -e "Hello\nWorld\nHow\nAre\nYou" | cut -c 1
 # H
 # W
 # H
 # A
 # Y
 
-echo -e "Helllo\nWorld\nHow\nAre\nYou" | cut -c 1-3
+echo -e "Hello\nWorld\nHow\nAre\nYou" | cut -c 1-3
 # Hel
 # Wor
 # How
 # Are
 # You
 
-echo -e "Helllo\nWorld\nHow\nAre\nYou" | cut -c 2-
-# elllo
+echo -e "Hello\nWorld\nHow\nAre\nYou" | cut -c 2-
+# ello
 # orld
 # ow
 # re
 # ou
 
-echo -e "Helllo\nWorld\nHow\nAre\nYou" | cut -c -3
+echo -e "Hello\nWorld\nHow\nAre\nYou" | cut -c -3
 # Hel
 # Wor
 # How
 # Are
 # You
 
-echo -e "Helllo\nWorld\nHow Are\nAre\nYou Doing" | cut -c 1,3,5
-# Hll
+echo -e "Hello\nWorld\nHow Are\nAre\nYou Doing" | cut -c 1,3,5
+# Hlo
 # Wrd
 # HwA
 # Ae
@@ -1055,13 +1054,12 @@ echo -e "Column1,Column2,Column3" | cut -d ',' -f 1,2 --output-delimiter=':'
 
 Advantages of using awk:
 
-* Allows delimiters of more than 1 character.
-* Handles fields seperated by whitespace well.
+- Allows delimiters of more than 1 character.
+- Handles fields separated by whitespace well.
 
+`-F SEPARATOR` Specify field separator
 
-`-F SEPERATOR` Specify field seperator
-
-`-v OFS='SEPERATOR'` Change output field seperator
+`-v OFS='SEPARATOR'` Change output field separator
 
 `$NF` Special awk variable that gives number of fields.
 Can be used to display last field.
@@ -1120,7 +1118,7 @@ echo -e "L1C1         L2C2\n   L2C1 L2C2    \n L3C1      L3C2\nL4C1\tL4C2" | awk
 netstat -nutl
 # Active Internet connections (only servers)
 # Proto Recv-Q Send-Q Local Address           Foreign Address         State  
-# tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN 
+# tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
 # tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN
 # tcp6       0      0 :::22                   :::*                    LISTEN
 # tcp6       0      0 ::1:25                  :::*                    LISTEN
@@ -1155,7 +1153,7 @@ Only sorts in output, sort is not stored in provided file.
 
 `-u` Only keep unique values.
 
-`-t` Specify field seperator.
+`-t` Specify field separator.
 
 `-k` Specify a sort key.
 
@@ -1235,10 +1233,10 @@ du
 
 Note: Only works if the input to `uniq` is already sorted
 
-`-c` Gives you the number of duplicate occurences.
+`-c` Gives you the number of duplicate occurrences.
 
 ```bash
-# Doesnt work on unsorted input
+# Doesn't work on unsorted input
 netstat -nutl | grep ':' | awk '{print $4}' | awk -F ':' '{print $NF}' | uniq
 # 22
 # 25
@@ -1318,9 +1316,9 @@ cat /etc/hosts
 ```bash
 ssh-keygen
 # Generating public/private rsa key pair.
-# Enter file in which to save the key (/home/vagrant/.ssh/id_rsa): 
-# Enter passphrase (empty for no passphrase): 
-# Enter same passphrase again: 
+# Enter file in which to save the key (/home/vagrant/.ssh/id_rsa):
+# Enter passphrase (empty for no passphrase):
+# Enter same passphrase again:
 # Your identification has been saved in /home/vagrant/.ssh/id_rsa.
 # Your public key has been saved in /home/vagrant/.ssh/id_rsa.pub.
 # The key fingerprint is:
@@ -1350,10 +1348,10 @@ ssh-copy-id server01
 # Are you sure you want to continue connecting (yes/no)? yes
 # /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
 # /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-# vagrant@server01's password: 
-# 
+# vagrant@server01's password:
+#
 # Number of key(s) added: 1
-# 
+#
 # Now try logging into the machine, with:   "ssh 'server01'"
 # and check to make sure that only the key(s) you wanted were added.
 
